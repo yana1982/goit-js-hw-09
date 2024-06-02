@@ -1,0 +1,1 @@
+.gallery{display:flex;flex-wrap:wrap;flex-direction:row;max-width:1440px;gap:24px;padding:24px 156px;background-color:#fff;box-shadow:0 0 5px #0003}.gallery-item{list-style:none}.gallery-image{width:360px;height:200px}.sl-overlay{background-color:#2e2f42}

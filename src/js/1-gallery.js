@@ -1,3 +1,6 @@
+import SimpleLightbox from "simplelightbox";
+import "simplelightbox/dist/simple-lightbox.min.css";
+
 const images = [
     {
       preview:
@@ -65,48 +68,28 @@ const images = [
   ];
 
 
-const gallery = document.querySelector('.gallery');
-
-
-function imageTemplate(image) {
+  const galleryList = document.querySelector('.gallery');
+  const markupImages = images
+    .map(
+      image =>
+        `<li class="gallery-item">
+    <a class="gallery-link" href="${image.original}">
+      <img
+        class="gallery-image"
+        src="${image.preview}"
+        alt="${image.description}"
+      />
+    </a>
+  </li>`
+    )
+    .join('');
+  galleryList.insertAdjacentHTML('afterbegin', markupImages);
   
-return `<li class="gallery-item">
-<a class="gallery-link" href="${image.original}">
-  <img
-    class="gallery-image"
-    src="${image.preview}"
-    alt="${image.description}" />
-</a>
-</li>`;
-} 
+  let gallery = new SimpleLightbox('.gallery a', {
+    captions: true,
+    captionsData: 'alt',
+    captionDelay: 250,
+  });
 
-function imagesTemplate(arr) {
-  
-  return arr.map(imageTemplate).join('');
-}
-
-const markup = imagesTemplate(images);
-
-
-gallery.innerHTML = markup;
-
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
-
-
-const lightbox = new SimpleLightbox('.gallery a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-  overlayOpacity: 0.8,
-   
-});
-
-document.addEventListener('click', function(e) {
-    e.preventDefault();
-        if (e.target.classList.contains('gallery-link')) {
-        lightbox.open(); 
-            }
-    
-});
 
 

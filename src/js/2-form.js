@@ -2,63 +2,38 @@ let formData = {
     email: '',
     message: '',
   };
-  const form = document.querySelector('.feedback-form');
-  
-  form.addEventListener('input', (e) => {
-    const formUser = new FormData(form);
-    const email = formUser.get('email').trim();
-    const message = formUser.get('message').trim();
-    formData = { email, message };
-  
-    if (email && message) {
-        formData = { email, message };
 
-    saveToLS('email', email);
-    saveToLS('message', message);
-    saveToLS('feedback-form-state', formData);
-    }
-  });
-  
-    form.addEventListener('submit', (e) => {
-    e.preventDefault();
-  
-    const formUser = new FormData(form);
-    const email = formUser.get('email').trim();
-    const message = formUser.get('message').trim();
-    formData.email = email;
-    formData.message = message;
-  
-    if (!email || !message) {
-      alert('Fill please all fields');
-      return;
-    }
-  
-    console.log({ email, message });
-  
-    form.reset();
-    localStorage.removeItem('email');
-    localStorage.removeItem('message');
-    localStorage.removeItem('feedback-form-state');
-  });
-  
-  function saveToLS(key, value) {
-    const jsonData = JSON.stringify(value);
-    localStorage.setItem(key, jsonData);
+const formElement = document.querySelector('.feedback-form');
+const emailElement = formElement.elements.email;
+const messageElement = formElement.elements.message;
+const localStorageKey = 'feedback-form-state';
+
+if (localStorage.getItem(localStorageKey) !== null) {
+  emailElement.value = JSON.parse(
+    localStorage.getItem(localStorageKey)
+  ).email;
+  formData.email = emailElement.value;
+  messageElement.value = JSON.parse(
+    localStorage.getItem(localStorageKey)
+  ).message;
+  formData.message = messageElement.value;
+}
+
+formElement.addEventListener('input', e => {
+  if (e.target.name === 'email' || e.target.name === 'message') {
+    formData[e.target.name] = e.target.value;
+    localStorage.setItem(localStorageKey, JSON.stringify(formData));
   }
-  
-  function loadFromLS(key) {
-    const json = localStorage.getItem(key);
-    try {
-      const data = JSON.parse(json);
-      return data;
-    } catch {
-      return json;
-    }
+});
+
+formElement.addEventListener('submit', e => {
+  e.preventDefault();
+  if (formData.email === '' || formData.message === '') {
+    return alert('Fill please all fields');
   }
-  
-  window.addEventListener('DOMContentLoaded', () => {
-    formData = loadFromLS('feedback-form-state');
-    
-    form.elements.email.value = formData?.email || '';
-    form.elements.message.value = formData?.message || '';
-  });
+  console.log(formData);
+  localStorage.removeItem(localStorageKey);
+  formData.email = '';
+  formData.message = '';
+  formElement.reset();
+});
